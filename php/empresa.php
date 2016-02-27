@@ -14,7 +14,45 @@
 
 		case 'verificar_empresa':
 			verificar_empresa();
-			break;
+		break;
+
+		case 'modificar_empresa':
+			modificar_empresa();
+		break;
+	}
+
+	function modificar_empresa(){
+			//RECIBIMOS EL SERIALIZE() Y LO ASIGNAMOS A VARIABLES
+		parse_str($_POST["cadena"], $_POST);
+
+		$nombre = trim($_POST['nombre']);
+		$rfc = trim($_POST['rfc']);
+		$email = trim($_POST['email']);
+		$web = trim($_POST['web']);
+		$calle = trim($_POST['calle']);
+		$num = trim($_POST['num']);
+		$col = trim($_POST['col']);
+		$city = trim($_POST['city']);
+		$edo = trim($_POST['edo']);
+		$tel = trim($_POST['tel']);
+		$cel = trim($_POST['cel']);
+			//REALIZAMOS LA CONSULTA
+		$consulta = "update empresa set nombre_empresa = '".$nombre."',rfc = '".$rfc."',
+			calle = '".$calle."',numero = '".$num."',colonia = '".$col."',ciudad = '".$city."',
+			estado = '".$edo."',telefono = '".$tel."',celular = '".$cel."',email = '".$email."',
+			web= '".$web."' where nombre_empresa = '".$nombre."' ";
+			//EJECUTAMOS LA CONSULTA
+		$resultado = mysql_query($consulta)or die(mysql_error());
+
+		if ($resultado == true){
+			$respuesta = true;
+			$salidaJSON = array('respuesta' => $respuesta);
+			print json_encode($salidaJSON);
+		} else {
+			$fallo = true;
+			$falloJSON = array('fallo' => $fallo);
+			print(json_encode($falloJSON));
+		}
 	}
 
 	function verificar_empresa(){
@@ -61,32 +99,29 @@
 		$edo = trim($_POST['edo']);
 		$tel = trim($_POST['tel']);
 		$cel = trim($_POST['cel']);
-		
-			//VALIDAMOS SI EXISTE LA EMPRESA
-		$sql = "select nombre_empresa,rfc from empresa 
-			where nombre_empresa = '".$nombre."' and rfc = '".$rfc."' ";
-			//EJECUTAMOS LA CONSULTA
+			//COMPROBAMOS SI YA HAY UNA EMPRESA DADA DE ALTA
+		$sql = "select nombre_empresa from empresa where nombre_empresa = = '".$nombre."' ";
 		$res = mysql_query($sql) or die(mysql_error());
-		if (mysql_num_rows($res) > 0)  {
+		
+		if (mysql_num_rows($res) > 0) {
 			$existe = true;
-			$existeJSON = array('existe' => $existe );
+			$existeJSON = array('existe' => $existe,
+				'nombre' => $nombre_completo );
 			print(json_encode($existeJSON));
-			exit();
-		} else {
-				//REALIZAMOS LA CONSULTA
-			$consulta = "insert into empresa(nombre_empresa,rfc,calle,numero,colonia,ciudad,estado,telefono,celular,email,web) values('".$nombre."','".$rfc."','".$calle."','".$num."','".$col."','".$city."','".$edo."','".$tel."','".$cel."','".$email."','".$web."')";
-				//EJECUTAMOS LA CONSULTA
-			$resultado = mysql_query($consulta)or die(mysql_error());
+		}
+			//REALIZAMOS LA CONSULTA
+		$consulta = "insert into empresa(nombre_empresa,rfc,calle,numero,colonia,ciudad,estado,telefono,celular,email,web) values('".$nombre."','".$rfc."','".$calle."','".$num."','".$col."','".$city."','".$edo."','".$tel."','".$cel."','".$email."','".$web."')";
+			//EJECUTAMOS LA CONSULTA
+		$resultado = mysql_query($consulta)or die(mysql_error());
 
-			if ($resultado == true){
-				$respuesta = true;
-				$salidaJSON = array('respuesta' => $respuesta);
-				print json_encode($salidaJSON);
-			} else {
-				$fallo = true;
-				$falloJSON = array('fallo' => $fallo);
-				print(json_encode($falloJSON));
-			}
+		if ($resultado == true){
+			$respuesta = true;
+			$salidaJSON = array('respuesta' => $respuesta);
+			print json_encode($salidaJSON);
+		} else {
+			$fallo = true;
+			$falloJSON = array('fallo' => $fallo);
+			print(json_encode($falloJSON));
 		}
 	}
  ?>

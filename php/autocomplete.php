@@ -28,7 +28,10 @@
 		$name = trim($_POST['name']);
 			//VALIDAMOS SI EL NOMBRE ESTA VACIO Y CREAMOS LA CONSULTA
 		if (!empty($name)) {
-			$sql = "select cantidad_actual from productos where nombre_producto = '".$name."' ";
+			$sql = "select cantidad_actual,nombre_medida 
+				from productos p
+				inner join unidad_medida um on um.clave_medida = p.unidad_medida
+				where nombre_producto = '".$name."' ";
 				//EJECUTAMOS LA CONSUTA
 			$resultado = mysql_query($sql) or die(mysql_error());
 			$contar = mysql_num_rows($resultado);
@@ -36,6 +39,7 @@
         	if($contar > 0){
 				while($row = mysql_fetch_array($resultado)){
                 	$respuesta->existencia = $row['cantidad_actual'];
+                	$respuesta->um = $row['nombre_medida'];
 				}
             	print(json_encode($respuesta));
         	}

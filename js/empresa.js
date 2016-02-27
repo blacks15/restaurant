@@ -9,6 +9,8 @@ $(document).ready(function() {
 	if (window.location.pathname != '/pages/CrearEmpresa.html') {
 		empresa();
 	} else {
+		var nombre = sessionStorage.getItem('nombre');
+		nombre = nombre.replace(/\s+/g, '');
 		$("#imagen").fileinput({
 			showCaption: false,
 			showUpload: false,
@@ -21,11 +23,13 @@ $(document).ready(function() {
 	        removeClass: "btn btn-danger",
 	        removeLabel: "",
 	        removeIcon: "<i class=\"fa fa-trash\"></i> ",
+	        initialPreview: [
+            '<img src="../images/'+nombre+'.jpg" class="file-preview-image">',
+        	],
 		});
 			//EJECUTAR FUNCIÓN ACTUALIZAR
 		update();		
 	}
-
 		//FUNCIÓN PARA VERIFICAR SI HAY UNA EMPRESA DADA DE ALTA
 	function empresa(){
 		$.ajax({
@@ -91,9 +95,10 @@ $(document).ready(function() {
             }
         });
 	}
-
 		//FUNCIÓN UPDATE
 	function update() {
+		var nombre = sessionStorage.getItem('nombre');
+		//nombre = nombre.replace(/\s+/g, '');
 			//LLENAMOS LOS DATOS CON LA SESSION PARA SER ACTUALIZADOS
 		$("#nombre").val(sessionStorage.getItem('nombre'));
 		$("#rfc").val(sessionStorage.getItem('rfc'));
@@ -109,7 +114,6 @@ $(document).ready(function() {
 			//VACIAMOS LA SESSION
 		sessionStorage.clear();
 	}
-
 		//FUNCIÓN SUBIR IMAGEN
 	function subirimagen(){
 		var name = $("#nombre").val();
@@ -169,12 +173,16 @@ $(document).ready(function() {
 					            show: {effect : "fold" ,duration: 350},
 					            hide: {effect : "explode", duration: 300},
 					            resizable: "false",
-					            buttons: { "OK": function () { $(this).dialog("close"); } },   
+					            buttons: { "OK": function () {
+					            	window.location.href = "Empresa.html";
+					            }},   
 					        });
 							limpiar();	
 						}
 					} else if (response.existe == true) {
 						$("#existe").dialog({
+							closeOnEscape: false,
+							open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
 							modal: true,
 				            width: 270,
 				            height: 200,
@@ -185,6 +193,70 @@ $(document).ready(function() {
 				            	window.location.href = "Empresa.html";
 				            } },   
 				        });
+					} else if (response.fallo == true) {
+						$("#error").dialog({
+							modal: true,
+				            width: 270,
+				            height: 200,
+				            show: {effect : "fold" ,duration: 350},
+				            hide: {effect : "explode", duration: 300},
+				            resizable: "false",
+				            buttons: { "OK": function () { 
+				            	window.location.reload();
+				            } },   
+				        });
+						limpiar();
+					}
+				},	
+				error: function(xhr,ajaxOptions,throwError){
+					console.log(ajaxOptions+","+throwError);
+				} 
+			});
+		} else {
+			$("#full").dialog({
+				modal: true,
+	            width: 270,
+	            height: 200,
+	            show: {effect : "fold" ,duration: 350},
+	            hide: {effect : "explode", duration: 300},
+	            resizable: "false",
+	            buttons: { "OK": function () { $(this).dialog("close"); } },   
+	        });
+		}
+	});
+			//BOTÓN ACUTALIZAR
+	$("#btnUpdate").click(function() {
+		var cadena = $("#empresa").serialize();
+		
+		if (validar() ) {
+			$.ajax({
+				cache: false,
+				type: "post",
+				dataType: 'json',
+				url: '../php/empresa.php',
+				data: {opc:"modificar_empresa",cadena },
+				beforeSend: function(objeto){ 
+                	$('#carga').css({'display':'block'});
+           		},
+            	complete: function(){
+            		$('#carga').css('display','none');
+            	},
+				success: function(response) {
+					if(response.respuesta == true) {
+						if (subirimagen() == true) {
+							$("#upd").dialog({
+								closeOnEscape: false,
+								open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
+								modal: true,
+					            width: 270,
+					            height: 200,
+					            show: {effect : "fold" ,duration: 350},
+					            hide: {effect : "explode", duration: 300},
+					            resizable: "false",
+					            buttons: { "OK": function () { $(this).dialog("close"); } },   
+					        });
+							limpiar();	
+						}
 					} else if (response.fallo == true) {
 						$("#error").dialog({
 							modal: true,
@@ -232,7 +304,6 @@ $(document).ready(function() {
 	$("#refresh").click(function() {
 		window.location.reload();
 	});
-
 		//LLENAMOS LA SESION CON LOS DATOS
 	function sesion(){
 		var nombre = $("#nombre").val();
@@ -251,7 +322,6 @@ $(document).ready(function() {
 		sessionStorage.setItem("city",city);
 		sessionStorage.setItem("edo",edo);
 	}
-
 		//FUNCIÓN VALIDAR CAMPOS
 	function validar(){
 		ocultar();
@@ -360,6 +430,7 @@ $(document).ready(function() {
 	function ocultar(){
 		$("#mensajealta").hide();
 		$("#upd").hide();
+		$("#existe").hide();
 		$("#full").hide();
 		$("#error").hide();
 		$("#errornombre").hide();

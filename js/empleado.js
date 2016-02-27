@@ -34,7 +34,7 @@ $(document).ready(function(){
 						$("#mensajealta").dialog({
 							modal: true,
 				            width: 270,
-				            height: 170,
+				            height: 200,
 				            show: {effect : "fold" ,duration: 350},
 				            hide: {effect : "explode", duration: 300},
 				            resizable: "false",
@@ -46,7 +46,7 @@ $(document).ready(function(){
 						$("#existe").dialog({
 							modal: true,
 				            width: 270,
-				            height: 170,
+				            height: 200,
 				            show: {effect : "fold" ,duration: 350},
 				            hide: {effect : "explode", duration: 300},
 				            resizable: "false",
@@ -57,7 +57,7 @@ $(document).ready(function(){
 						$("#error").dialog({
 							modal: true,
 				            width: 270,
-				            height: 170,
+				            height: 200,
 				            show: {effect : "fold" ,duration: 350},
 				            hide: {effect : "explode", duration: 300},
 				            resizable: "false",
@@ -290,7 +290,7 @@ $(document).ready(function(){
 			$("#numeros").dialog({
 				modal: true,
 	            width: 270,
-	            height: 170,
+	            height: 200,
 	            show: {effect : "fold" ,duration: 300},
 	            hide: {effect : "explode", duration: 300},
 	            resizable: "false",

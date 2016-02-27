@@ -69,7 +69,7 @@ $(document).ready(function(){
 			$("#full").dialog({
 				modal: true,
 				width: 270,
-				height: 190,
+				height: 200,
 				show: {effect : "fold" ,duration: 350},
 				hide: {effect : "explode", duration: 300},
 				resizable: "false",
@@ -91,6 +91,10 @@ $(document).ready(function(){
 		//BOTÓN REFRESCAR  
 	$("#reset").click(function(){
 		window.location.reload();
+	});
+		//BOTÓN SALIDA	
+	$("#btnOut").click(function(){
+		window.location.href = "../pages/SalidaProducto.html";
 	});
 
 	function validar(){

@@ -6,7 +6,56 @@ $(document).ready(function(){
 	$("#btnSave").click(function() {
 		if (validar() ) {
 			var cadena = $("#sp").serialize();
-			alert(cadena);
+			$.ajax({
+				cache: false,
+				dataType: "json",
+	            type: "POST",
+	            url: "../php/producto.php",
+	            data: {opc:"salida_producto",cadena },
+	            beforeSend: function(objeto){ 
+               		$('#carga').css({'display':'block'});
+	       		},
+	        	complete: function(){
+	        		$('#carga').css('display','none');
+	        	},
+	            success: function(respuesta){
+					if (respuesta.respuesta == true) {
+						$("#mensajealta").dialog({
+							modal: true,
+							width: 270,
+							height: 200,
+							show: {effect : "fold" ,duration: 350},
+							hide: {effect : "explode", duration: 300},
+							resizable: "false",
+							buttons: { "OK": function () { $(this).dialog("close");} },   
+						});
+						limpiar();
+					} if (respuesta.insuf == true) {
+						$("#insuf").dialog({
+							modal: true,
+							width: 270,
+							height: 200,
+							show: {effect : "fold" ,duration: 350},
+							hide: {effect : "explode", duration: 300},
+							resizable: "false",
+							buttons: { "OK": function () {
+								$(this).dialog("close");
+								$("#nombre").focus();} 
+							},   
+						});
+					} if (respuesta.fallo == true) {
+						$("#error").dialog({
+							modal: true,
+							width: 270,
+							height: 200,
+							show: {effect : "fold" ,duration: 350},
+							hide: {effect : "explode", duration: 300},
+							resizable: "false",
+							buttons: { "OK": function () { $(this).dialog("close");} },   
+						});
+					}
+	            }
+	        });
 		} else {
 			$("#full").dialog({
 				modal: true,
@@ -53,6 +102,7 @@ $(document).ready(function(){
 						limpiar();
 					} else {
 						$('#exist').val(respuesta.existencia);
+						$("#um").val(respuesta.um);
 					}
 	            }
 	        });
@@ -104,6 +154,7 @@ $(document).ready(function(){
 		$("#codigo").val("");
 		$("#nombre").val("");
 		$("#exist").val("");
+		$("#um").val("");
 		$("#salida").val("");
 		$("#nombre").focus();
 	}
@@ -112,6 +163,7 @@ $(document).ready(function(){
 	function ocultar(){
 		$("#mensajealta").hide();
 		$("#upd").hide();
+		$("#insuf").hide();
 		$("#agotado").hide();
 		$("#full").hide();
 		$("#noex").hide();

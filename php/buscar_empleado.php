@@ -18,7 +18,7 @@
   if($post['search'] == 'true'){
     $b = array();
      //Usamos la funci{on elements para crear un arreglo con los datos que van a ser para buscar por like
-    $search['like']=elements(array('nombre_empleado','apellidos','ciudad','estado'),$_REQUEST);
+    $search['like'] = elements(array('nombre_empleado','apellidos','ciudad','estado'),$_REQUEST);
      //haciendo un recorrido sobre ellos vamos creando la consulta.
     foreach($search['like'] as $key => $value){
       if($value != false) $b[]="$key like '%$value%'";
@@ -30,7 +30,7 @@
       if($value != false) $b[]="$key = '$value'";
     }
         //Creamos la consulta where
-    $se = "where status = 'ACTIVO' and ".implode(' or ',$b );   
+    $se = " where status = 'ACTIVO' and ".implode(' and ',$b );   
      
   }
       //Realizamos la consulta para saber el numero de filas que hay en la tabla con los filtros
@@ -51,10 +51,10 @@
     $post['offset'] = 0;
   }
   if (!$se) {
-    $sql = "select matricula,nombre_empleado,concat(apellido_paterno,' ',apellido_materno) as apellidos,concat(calle,' ',numero,' ',colonia) as direccion,ciudad,estado,telefono,celular, sueldo,t.tipo,status 
+    $sql = "select matricula,nombre_empleado,concat(apellido_paterno,' ',apellido_materno) as apellidos,concat(calle,' ',numero,' ',colonia) as direccion,ciudad,estado,telefono,celular, sueldo,t.nombre_tipo,status 
       from empleados
       inner join tipo_empleado t on t.clave_tipo = empleados.tipo
-      where  status = 'ACTIVO'";
+      where  status = 'ACTIVO' ";
     if( !empty($post['orden']) && !empty($post['orderby']))
       //Añadimos de una ves la parte de la consulta para ordenar el resultado
     $sql.= " ORDER BY $post[orderby] $post[orden] ";
@@ -69,7 +69,9 @@
   } else {
       //Creamos la consulta que va a ser enviada de una ves con la parte de filtrado
     $sql = "select matricula,nombre_empleado,concat(apellido_paterno,' ',apellido_materno) as apellidos,concat(calle,' ',numero,' ',colonia) as direccion,
-    ciudad,estado,telefono,celular,sueldo,tipo,status from empleados".$se;
+    ciudad,estado,telefono,celular,sueldo,t.nombre_tipo,status 
+    from empleados
+    inner join tipo_empleado t on t.clave_tipo = empleados.tipo ".$se;
     if( !empty($post['orden']) && !empty($post['orderby']))
         //Añadimos de una ves la parte de la consulta para ordenar el resultado
       $sql.= " ORDER BY $post[orderby] $post[orden] ";

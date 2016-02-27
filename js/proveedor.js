@@ -25,7 +25,7 @@ $(document).ready(function(){
 						$("#mensajealta").dialog({
 							modal: true,
 				            width: 270,
-				            height: 170,
+				            height: 200,
 				            show: {effect : "fold" ,duration: 350},
 				            hide: {effect : "explode", duration: 300},
 				            resizable: "false",
@@ -63,7 +63,7 @@ $(document).ready(function(){
 			$("#full").dialog({
 				modal: true,
 				width: 270,
-				height: 170,
+				height: 200,
 				show: {effect : "fold" ,duration: 350},
 				hide: {effect : "explode", duration: 300},
 				resizable: "false",
@@ -88,20 +88,23 @@ $(document).ready(function(){
 		var cel = $("#cel").val();
 		var tel = $("#tel").val();
 		var lim = cel.length;
+		var tlim = tel.length;
 
 		if (empresa == "") {
 			$("#empresa").focus();
 			$("#errorempresa").show();
 			return false;
 		} else if (cel == "" && tel  == "") {
-			$("#cel").focus();
-			$("#errorcel").show();
-			return false;
-		} else if (lim < 10 || lim > 10) {
-			$("#cel").focus();
-			$("#errorlim").show();
-			return false;
-		}
+			if (clim != 10 && tlim != 7 || tlim != 10) {
+				$("#tel").focus();
+				$("#errorlim").show('slide',500);
+				return false;
+			} else {
+				$("#cel").focus();
+				$("#errorcel").show();
+				return false;
+			}
+		} 
 		return true;
 	}
 		//FUNCIÓN PARA LIMPIAR LOS CAMPOS
@@ -173,7 +176,7 @@ $(document).ready(function(){
 			$("#numeros").dialog({
 				modal: true,
 	            width: 270,
-	            height: 170,
+	            height: 200,
 	            show: {effect : "fold" ,duration: 300},
 	            hide: {effect : "explode", duration: 300},
 	            resizable: "false",

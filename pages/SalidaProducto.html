@@ -39,7 +39,9 @@
 				</td>
 				<td>
 					<label for="textfield">Existencia: </label>
-					<input type="number" name="exist" id="exist" readonly="true"><br>
+					<input type="number" name="exist" id="exist" readonly="true" class="is"><br>
+					<label for="textifield">Unidad Medida:</label>
+					<input type="text" class="im" name="um" id="um" readonly="true"><br>
 					<label for="textfield">Salida: </label>
 					<input type="number" min="0" class="is" name="salida" id="salida"><br>
 					<div class="ui-widget" id="errorsalida">
@@ -49,7 +51,9 @@
 							</p>
 						</div>
 					</div>
-					<button type="button" id="btnNew" class="btn btn-primary">Ingresar Nuevo</button>
+				</td>
+				<td>
+					<button type="button" id="btnNew" class="btn btn-primary">Ingresar Nuevo</button><br>
 					<button type="button" id="btnGo" class="btn btn-primary">Ver Productos</button>
 				</td>
 			</tr>
@@ -69,6 +73,10 @@
 	<div id="upd" title="Información Guardada">
 		<span class="fa fa-fw fa-check-circle icon-blue"></span>
 		<center><strong>Salida De Producto Actualizado Con Éxito.</strong></center>
+	</div>
+	<div id="insuf" title="Advertencia">
+		<span class="fa fa-fw fa-warning icon-red"></span>
+		<center><strong>Producto Insuficiente Para La Salida.</strong></center>
 	</div>
 	<div id="agotado" title="Advertencia">
 		<span class="fa fa-fw fa-warning icon-red"></span>

@@ -12,7 +12,7 @@ $(document).ready(function(){
 			{name:'nombre_producto', index:'nombre_producto', width:400,resizable:false,search:true},
 	        {name:'proveedor', index:'proveedor', width:200,search:true},
 	        {name:'unidad_medida', index:'unidad_medida', width:270,search:true},
-	        {name:'cantidad_actual', index:'cantidad_actual', width:230,search:false, align:"center",formatter:rowcolor},
+	        {name:'cantidad_actual', index:'cantidad_actual', width:230,search:false, align:"center",formatter: rowcolor},
 	        {name:'precio', index:'precio',formatter:'currency',formatoptions: {prefix:'$', suffix:'', thousandsSeparator:','},search:false, width:180, align:"center"},
 	        {name:'status', index:'status',search:false, width:180}
         ],
@@ -84,12 +84,14 @@ $(document).ready(function(){
 			success: function(msg){
 				if (msg.respuesta == true) {
 					console.log("correcto");
-				} else {
+				} if (msg.fallo == true) {
 					console.log("error");
+				} if (msg.respuesta == false) {
+					console.log("sin actualizar");
 				}
 			},
 			error: function(xhr,ajaxOptions,throwError){
-			console.log(throwError);
+				console.log(ajaxOptions+" "+throwError);
 			} 
 		});
 			//RECARGAR GRID

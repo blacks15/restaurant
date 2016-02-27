@@ -15,7 +15,7 @@
 			//RECORREMOS LA CONSULTA PARA VERIFICAR LA CANTIDAD DEL PRODUCTO
 		while ($row = mysql_fetch_array($resultado)) {
 				//SI LA CANTIDAD ES MENOS A 0 ACTUALIZAMOS EL ESTADO DEL PRODUCTO
-			if ($row['cantidad_actual'] == 0) {
+			if ($row['cantidad_actual'] == 0) { 
 				$sql2 = "update productos set status = 'AGOTADO' 
 					where clave_producto = '".$value['clave_producto']."' ";
 						//EJECUTAMOS LA COSULTA
@@ -25,12 +25,15 @@
 					$salidaJSON = array('respuesta' => $respuesta );
 					print json_encode($salidaJSON);
 				} else {
-					$respuesta = false;
-					$salidaJSON = array('respuesta' => $respuesta );
+					$fallo = true;
+					$salidaJSON = array('fallo' => $fallo );
 					print json_encode($salidaJSON);
-				} //END ELSE
+				} //END ELSE				
+			} else {
+				$respuesta = false;
+				$salidaJSON = array('respuesta' => $respuesta );
+				print json_encode($salidaJSON);
 			} // END FIRST IF
 		} // END WHILE
 	} //END FOREACH
-
  ?>
