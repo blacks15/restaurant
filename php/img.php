@@ -17,10 +17,11 @@
 	if (!move_uploaded_file($tmp_archivo, $archivador)) {
 		$respuesta = false;
 		$return = array('respuesta' => $respuesta);
+		print(json_encode($return));
+		exit();
 	} else {
 		$respuesta = true;
 		$return = array('respuesta' => $respuesta);
+		print(json_encode($return));
 	}
-	echo json_encode($return);
-
  ?>

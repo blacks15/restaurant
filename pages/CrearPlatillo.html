@@ -43,24 +43,54 @@
 						<input type="text" readonly="true" id="id" name="id"><br>
 						<label for="textfield">Nombre: </label>
 						<input type="text" id="nombre" name="nombre"><br>
+						<div class="ui-widget" id="errornombre">
+		          			<div class="ui-corner-all">
+			            		<p>
+			            			<i class="fa fa-fw fa-warning icon-red"></i><strong>ERROR: </strong>DEBE INGRESAR UN NOMBRE.
+			            		</p>
+			            	</div>
+			         	</div>
 						<label for="textfield">Categoria: </label>
 						<select name="tipo" id="tipo" class="chosen">
 							<option value="0">SELECCIONE</option>
+							<option value="1">COMIDAS</option>
+							<option value="2">BEBIDAS</option>
+							<option value="3">POSTRES</option>
 						</select><br>
+						<div class="ui-widget" id="errorcategoria">
+		          			<div class="ui-corner-all">
+			            		<p>
+			            			<i class="fa fa-fw fa-warning icon-red"></i><strong>ERROR: </strong>DEBE SELECCIONAR UNA CATEGORIA.
+			            		</p>
+			            	</div>
+			         	</div>
 						<label for="textfield">Precio: </label>
-						<input type="number" class="ixs" id="precio" name="precio"><br>
+						<input type="number" class="ixs" id="precio" name="precio" min="0"><br>
+						<div class="ui-widget" id="errorprecio">
+		          			<div class="ui-corner-all">
+			            		<p>
+			            			<i class="fa fa-fw fa-warning icon-red"></i><strong>ERROR: </strong>DEBE INGRESAR UN PRECIO.
+			            		</p>
+			            	</div>
+			         	</div>
 						<button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
 						<button type="button" class="btn btn-primary" id="btnUpdate">Actualizar</button>
-						<button type="button" class="btn btn-primary">Ver Platillos</button>
-						<button type="button" class="btn" id="refresh">
+						<button type="button" class="btn btn-primary" id="btnGo">Ver Platillos</button>
+						<button type="button" class="btn" id="reset">
 							<i class="fa fa-fw fa-refresh icon-blue"></i>
 						</button>
 					</fieldset>
 				</td>
-				<td>
+				<td align="center">
 					<fieldset>
-						<legend>Imagen Del Producto </legend>
 						<input type="file" id="imagen" name="imagen" class="file-loading">
+						<div class="ui-widget" id="errorimagen">
+		          			<div class="ui-corner-all">
+			            		<p>
+			            			<i class="fa fa-fw fa-warning icon-red"></i><strong>ERROR: </strong>DEBE INGRESAR UNA IMAGEN.
+			            		</p>
+			            	</div>
+			         	</div>
 					</fieldset>
 				</td>
 			</tr>
@@ -96,8 +126,8 @@
 	</div>
 	<script src="../plugins/jquery.js"></script>
 	<script src="../js/platillo.js"></script>
-	<script src="../plugins/jqueryui/jquery-ui.min.js"></script>
 	<script src="../js/bootstrap/bootstrap.min.js"></script>
 	<script src="../plugins/fileinput/js/fileinput.min.js"></script>
 	<script type="text/javascript" src="../plugins/chosen/chosen.js"></script>
+	<script src="../plugins/jqueryui/jquery-ui.min.js"></script>
 </html>

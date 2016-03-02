@@ -15,7 +15,7 @@ $(document).ready(function() {
 			showCaption: false,
 			showUpload: false,
 			previewFileType: "image",
-			allowedFileExtensions: ["jpg","png"],
+			allowedFileExtensions: ["jpg"],
 			elErrorContainer: "#errorBlock",
 	        browseClass: "btn btn-success",
 	        browseLabel: "",
@@ -63,6 +63,7 @@ $(document).ready(function() {
 				        });
 					}
                 } else {
+                		//LLENAMOS LOS CAMPOS CON LOS VALORES RETORNADOS
 					$("#nombre").val(response.nombre);
 					$("#rfc").val(response.rfc);
 					$("#domicilio").val(response.domicilio);
@@ -72,21 +73,21 @@ $(document).ready(function() {
 					$("#cel").val(response.cel);
 					$("#email").val(response.email);
 					$("#web").val(response.web);
+						//ELIMINAMOS ESPACIO DEL NOMBRE
 					response.nombre = response.nombre.replace(/\s+/g, '');
-					var ImagenQueCargar = "../images/"+response.nombre+".jpg";
-					var img = $('<img>');
-					img.attr('src', ImagenQueCargar);
-					var imagen = new Image();
-					imagen.onload = imagenCargada;
-					imagen.src = ImagenQueCargar ;
-					function imagenCargada(){
-					    $("#showimage").css({
-					        'background-image' : 'url('+ImagenQueCargar+')',
-					        'background-size'  : '110%',
-					        'background-repeat'  : 'no-repeat',
-					        'background-position' : 'center',
-					    });
-					}
+						//MOSTRAR IMAGEN 
+					$("#imagen").fileinput({
+						showCaption: false,
+						showUpload: false,
+						showRemove: false,
+						overwriteInitial: false,
+				        initialPreview: [
+			            '<img src="../images/'+response.nombre+'.jpg" class="file-preview-image">',
+			        	],
+					});
+						//DESHABILITAR BOTÓN BROWSE
+					$("#imagen").fileinput("disable");
+						//SINO ES ADMINISTRADOR SE BLOQUEAN LOS BOTONES
 					if (response.tipo == 'administrador') {
 						$("#btnDatos").attr("disabled", "disabled");
 						$("#btnDelete").attr("disabled", "disabled");

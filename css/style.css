@@ -147,7 +147,12 @@ span {
 	text-align: center;
 	margin-bottom: .6em;
 }
-
+#ventana {
+	width: 300px; 
+	height: 350px; 
+	background: rgba(0,0,0,.3);
+	display:none;
+}
 .ventana {
 	display: none;
 	font-family: Arial, Helvetica, sans-serif;
@@ -156,7 +161,6 @@ span {
 	font-size: 15px;
 	text-align: justify;
 }
-
 	/*Formulario inicio*/
 .form-signin input[type="text"] {
     border-bottom-left-radius: 0;

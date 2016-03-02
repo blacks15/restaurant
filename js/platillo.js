@@ -3,8 +3,6 @@ $(document).ready(function(){
 	$("#nombre").focus();
 	$("#btnUpdate").hide();
 	ocultar();
-	var fileExtension = "";
-
 			//LLENAR COMBO USANDO CHOSEN
 	$('.chosen').chosen({
 		allow_single_deselect: true,
@@ -12,26 +10,150 @@ $(document).ready(function(){
 		no_results_text: "!No Hay Resultados!"
 	});
 
-        //BOTÓN GUARDAR
-	$("#btnSave").click(function(){
-		var inputFileImage = document.getElementById('imagen');
-		var file = inputFileImage.files[0];
-		var data = new FormData();
-		data.append('archivo',file);
-		
-		$.ajax({
-			cache: false,
+        //FUNCIÓN SUBIR IMAGEN
+    function subirimagen(){
+        var name = $("#nombre").val();
+        var name = name.replace( /\s/g, ""); 
+        var inputFileImage = document.getElementById('imagen');
+        var file = inputFileImage.files[0];
+        var data = new FormData();
+        data.append('archivo',file);
+        data.append('name',name);
+
+        $.ajax({
+            cache: false,
             url: '../php/img.php',
+            dataType: 'json',
             type: "POST",
             data: data,
             contentType: false,
             processData: false,
-            success: function(datos) {
-                $("#respuesta").html(datos);
+            success: function(response) {
+                if (response.respuesta == true) {
+                    console.log("imagen subida correctamente");                } 
             }
         });
+        return true;
+    }
+        //BOTÓN GUARDAR
+	$("#btnSave").click(function(){
+        var cadena = $("#platillo").serialize();
 
+		if (validar()) {
+            $.ajax({
+                cache: false,
+                type: "post",
+                dataType: 'json',
+                url: '../php/platillo.php',
+                data: {opc:"guardar_platillo",cadena },
+                beforeSend: function(objeto){ 
+                    $('#carga').css({'display':'block'});
+                },
+                complete: function(){
+                    $('#carga').css('display','none');
+                },
+                success: function(response) {
+                    if(response.respuesta == true) {
+                        if (subirimagen() == true) {
+                            $("#mensajealta").dialog({
+                                closeOnEscape: false,
+                                modal: true,
+                                width: 270,
+                                height: 200,
+                                show: {effect : "fold" ,duration: 350},
+                                hide: {effect : "explode", duration: 300},
+                                resizable: "false",
+                                buttons: { "OK": function () {$(this).dialog("close"); }},   
+                            });
+                            limpiar();  
+                        }
+                    } else if (response.existe == true) {
+                        $("#existe").dialog({
+                            modal: true,
+                            width: 270,
+                            height: 200,
+                            show: {effect : "fold" ,duration: 350},
+                            hide: {effect : "explode", duration: 300},
+                            resizable: "false",
+                            buttons: { "OK": function () { $(this).dialog("close"); } },   
+                        });
+                    } else if (response.fallo == true) {
+                        $("#error").dialog({
+                            modal: true,
+                            width: 270,
+                            height: 200,
+                            show: {effect : "fold" ,duration: 350},
+                            hide: {effect : "explode", duration: 300},
+                            resizable: "false",
+                            buttons: { "OK": function () { 
+                                window.location.reload();
+                            } },   
+                        });
+                        limpiar();
+                    }
+                },  
+                error: function(ajaxOptions,throwError){
+                    console.log(throwError);
+                } 
+            });
+        } else {
+            $("#full").dialog({
+                modal: true,
+                width: 270,
+                height: 200,
+                show: {effect : "fold" ,duration: 350},
+                hide: {effect : "explode", duration: 300},
+                resizable: "false",
+                buttons: { "OK": function () { $(this).dialog("close"); } },   
+            });
+        }
 	});
+        //BOTÓN VER
+    $("#btnGo").click(function(){
+        window.location.href = "../pages/BuscarPlatillo.html";
+    });
+        //BOTÓN REFRESCAR  
+    $("#reset").click(function(){
+        window.location.reload();
+    });
+        //FUNCIÓN PARA LIMPIAR LOS CAMPOS
+    function limpiar(){
+        $("#bus").val("");
+        $("#id").val("");
+        $("#nombre").val("");
+        $("#precio").val("");
+        $("#tipo").prop('selectedIndex', 0);
+        $('.chosen').trigger('chosen:updated');
+        $("#imagen").closest('form').trigger('reset');
+    }
+
+        //FUNCIÓN PARA VALIDAR CAMPOS
+    function validar(){
+        ocultar();
+        var nombre = $("#nombre").val();
+        var tipo = $("#tipo").val();
+        var precio = $("#precio").val();
+
+        if (nombre == "") {
+            $("#nombre").focus();
+            $("#errornombre").show('slide',500);
+            return false;
+        } else if (tipo == 0 || tipo == "") {
+            $("#tipo").focus();
+            $("#errorcategoria").show('slide',500);
+            return false;
+        } else if (precio == 0 || precio == "") {
+            $("#precio").focus();
+            $("#errorprecio").show('slide',500);
+            return false;
+        } else if (!$("#imagen").val()) {
+            $("#imagen").focus();
+            $("#errorimagen").show('slide',500);
+            return false;
+        }
+        return true;
+    }
+
         //FILE INPUT
     $("#imagen").fileinput({
         showCaption: false,
@@ -46,58 +168,6 @@ $(document).ready(function(){
         removeLabel: "",
         removeIcon: "<i class=\"fa fa-trash\"></i> ",
     });
-
-	
-	function datosimg() {
-		//obtenemos un array con los datos del archivo
-    	var file = $("#imagen")[0].files[0];
-       	 	//obtenemos el nombre del archivo
-        var fileName = file.name;
-       		//obtenemos la extensión del archivo
-        fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
-        	//obtenemos el tamaño del archivo
-        var fileSize = file.size;
-        	//obtenemos el tipo de archivo image/png ejemplo
-        var fileType = file.type;
-        	//mensaje con la información del archivo
-        showMessage("<span class='info'>Archivo para subir: "+fileName+", peso total: "+fileSize+" bytes.</span>");
-
-	}
-
-        //FUNCIÓN PREVISUALIZAR IMAGEN
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            
-            reader.onload = function (e) {
-                $("#showimage").attr('src', e.target.result);
-            }
-            
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-        //PREVISUALIZAR IMAGEN
-    $("#imagen").change(function(){
-        readURL(this);
-        datosimg(this);
-    });
-        //MOSTRAR MENSAJE DE IMAGEN
-	function showMessage(message){
-	    $(".messages").html("").show();
-	    $(".messages").html(message);
-	}
-
-        //LIMITAR ARCHIVO A IMAGEN
-	function isImage(extension) {
-	    switch(extension.toLowerCase()) {
-	        case 'jpg': case 'png': case 'jpeg':
-	            return true;
-	        break;
-	        default:
-	            return false;
-	        break;
-	    }
-	}
         //FUNCIÓN PARA OCULTAR MENSAJES
     function ocultar(){
         $("#mensajealta").hide();
@@ -108,14 +178,9 @@ $(document).ready(function(){
         $("#error").hide();
         $("#errorbuscar").hide();
         $("#errornombre").hide();
-        $("#errorapaterno").hide();
-        $("#erroramaterno").hide();
-        $("#errorcalle").hide();
-        $("#errornum").hide();
-        $("#errorcol").hide();
-        $("#errorcel").hide();
-        $("#errorsueldo").hide();
-        $("#errortipo").hide();
+        $("#errorcategoria").hide();
+        $("#errorprecio").hide();
+        $("#errorimagen").hide();
     }
 
 });
